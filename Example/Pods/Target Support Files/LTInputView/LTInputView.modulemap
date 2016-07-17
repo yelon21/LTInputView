@@ -1,0 +1,6 @@
+framework module LTInputView {
+  umbrella header "LTInputView-umbrella.h"
+
+  export *
+  module * { export * }
+}

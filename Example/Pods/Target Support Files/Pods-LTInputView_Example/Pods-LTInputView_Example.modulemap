@@ -1,0 +1,6 @@
+framework module Pods_LTInputView_Example {
+  umbrella header "Pods-LTInputView_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

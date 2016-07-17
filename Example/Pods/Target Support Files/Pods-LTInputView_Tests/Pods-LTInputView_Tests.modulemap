@@ -1,0 +1,6 @@
+framework module Pods_LTInputView_Tests {
+  umbrella header "Pods-LTInputView_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

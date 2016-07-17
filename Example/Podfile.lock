@@ -1,0 +1,16 @@
+PODS:
+  - LTInputView (0.1.0)
+
+DEPENDENCIES:
+  - LTInputView (from `../`)
+
+EXTERNAL SOURCES:
+  LTInputView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  LTInputView: e45076cffeb778bdaad62742d7d1cfe538d0f8c0
+
+PODFILE CHECKSUM: 65fab53580a65473582f961f362aba2f417c6a1c
+
+COCOAPODS: 1.0.0

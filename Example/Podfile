@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'LTInputView_Example' do
+  pod 'LTInputView', :path => '../'
+
+  target 'LTInputView_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
