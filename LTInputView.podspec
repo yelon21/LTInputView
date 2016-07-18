@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-个人键盘工具
+个人键盘工具,持续更新ing
                        DESC
 
   s.homepage         = 'https://github.com/yelon21/LTInputView'
