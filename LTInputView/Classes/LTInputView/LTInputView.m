@@ -206,6 +206,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 -(void)awakeFromNib{
     
+    [super awakeFromNib];
     [self setup];
 }
 
@@ -287,7 +288,10 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             if (index == 9) {
                 
                 btn.tag = LTKeyType_delete;
-                [btn setTitle:@"⇦" forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:@"backToDelete0"]
+                        forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:@"backToDelete1"]
+                     forState:UIControlStateHighlighted];
             }
             else if (index == 11){
                 
@@ -324,7 +328,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     
     [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+//    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
     
     [btn addTarget:self
             action:@selector(keyPressed:)
@@ -404,15 +408,25 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
                 upperBtn.frame = CGRectMake(lineW, y, 1.5*cellW+lineW*0.5, cellH);
                 [superView addSubview:upperBtn];
                 
+                [upperBtn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
+                               forState:UIControlStateSelected];
+                
                 upperBtn.tag = LTKeyType_upper;
-                [upperBtn setTitle:@"⇧" forState:UIControlStateNormal];
+                [upperBtn setImage:[UIImage imageNamed:@"upper0"]
+                        forState:UIControlStateNormal];
+                [upperBtn setImage:[UIImage imageNamed:@"upper1"]
+                        forState:UIControlStateSelected];
                 
                 LTValueButton *delBtn = [self newValueButton];
                 delBtn.frame = CGRectMake((cellW+lineW)*8.5+lineW, y, 1.5*cellW+lineW*0.5, cellH);
                 [superView addSubview:delBtn];
                 
                 delBtn.tag = LTKeyType_delete;
-                [delBtn setTitle:@"⇦" forState:UIControlStateNormal];
+                
+                [delBtn setImage:[UIImage imageNamed:@"backToDelete0"]
+                        forState:UIControlStateNormal];
+                [delBtn setImage:[UIImage imageNamed:@"backToDelete1"]
+                        forState:UIControlStateHighlighted];
             }
             
             for (NSInteger col = 0; col < alpCount; col++) {
@@ -529,7 +543,11 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
                 [superView addSubview:delBtn];
                 
                 delBtn.tag = LTKeyType_delete;
-                [delBtn setTitle:@"⇦" forState:UIControlStateNormal];
+                
+                [delBtn setImage:[UIImage imageNamed:@"backToDelete0"]
+                        forState:UIControlStateNormal];
+                [delBtn setImage:[UIImage imageNamed:@"backToDelete1"]
+                        forState:UIControlStateHighlighted];
             }
         }
     }
@@ -599,7 +617,10 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             if (keyValue == LTKeyType_delete) {
                 
                 btn.tag = LTKeyType_delete;
-                [btn setTitle:@"⇦" forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:@"backToDelete0"]
+                        forState:UIControlStateNormal];
+                [btn setImage:[UIImage imageNamed:@"backToDelete1"]
+                     forState:UIControlStateHighlighted];
             }
             else if (keyValue == LTKeyType_change) {
                 

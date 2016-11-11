@@ -31,10 +31,10 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '6.0'
 
   s.source_files = 'LTInputView/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'LTInputView' => ['LTInputView/Assets/*.png']
-  # }
+  s.resource     = "LTInputView/Assets/**/*.png"
+#s.resource_bundles = {
+#'LTInputView' => ['LTInputView/Assets/*.png']
+#}
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'

@@ -1,9 +1,9 @@
 {
   "name": "LTInputView",
   "version": "0.1.0",
-  "summary": "A short description of LTInputView.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/LTInputView",
+  "summary": "个人键盘工具",
+  "description": "个人键盘工具,持续更新ing",
+  "homepage": "https://github.com/yelon21/LTInputView",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,11 +12,12 @@
     "yelon21": "254956982@qq.com"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/LTInputView.git",
+    "git": "https://github.com/yelon21/LTInputView.git",
     "tag": "0.1.0"
   },
   "platforms": {
-    "ios": "8.0"
+    "ios": "6.0"
   },
-  "source_files": "LTInputView/Classes/**/*"
+  "source_files": "LTInputView/Classes/**/*",
+  "resources": "LTInputView/Assets/**/*.png"
 }
