@@ -213,8 +213,8 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 - (void)setup{
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleDeviceOrientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
+                                             selector:@selector(handleStatusBarOrientationDidChange:)
+                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil
      ];
     
@@ -697,27 +697,22 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     }
 }
 
-- (void)handleDeviceOrientationDidChange:(UIInterfaceOrientation)interfaceOrientation
-{
+- (void)handleStatusBarOrientationDidChange:(NSNotification *)notification{
     //1.获取 当前设备 实例
-    UIDevice *device = [UIDevice currentDevice] ;
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     
-    switch (device.orientation) {
+    switch (orientation) {
             
-        case UIDeviceOrientationPortrait:
-        case UIDeviceOrientationPortraitUpsideDown:
-        case UIDeviceOrientationLandscapeLeft:
-        case UIDeviceOrientationLandscapeRight:{
+        case UIInterfaceOrientationPortrait:
+        case UIInterfaceOrientationPortraitUpsideDown:
+        case UIInterfaceOrientationLandscapeLeft:
+        case UIInterfaceOrientationLandscapeRight:{
             CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
             self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1);
             [self reloadViews];
             break;
         }
-        case UIDeviceOrientationFaceUp:
-            break;
-        case UIDeviceOrientationFaceDown:
-            break;
-        case UIDeviceOrientationUnknown:
+        case UIInterfaceOrientationUnknown:
             break;
         default:
             NSLog(@"无法辨识");
