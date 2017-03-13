@@ -204,6 +204,11 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     return self;
 }
 
+-(void)layoutSubviews{
+
+    [self reloadViews];
+}
+
 -(void)awakeFromNib{
     
     [super awakeFromNib];
@@ -211,12 +216,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 }
 
 - (void)setup{
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleStatusBarOrientationDidChange:)
-                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
-                                               object:nil
-     ];
     
     self.backgroundColor = [[UIColor lightGrayColor]colorWithAlphaComponent:0.1];
     CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
@@ -694,29 +693,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             btn.value = value;
             [btn setTitle:btn.value forState:UIControlStateNormal];
         }
-    }
-}
-
-- (void)handleStatusBarOrientationDidChange:(NSNotification *)notification{
-    //1.获取 当前设备 实例
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
-    switch (orientation) {
-            
-        case UIInterfaceOrientationPortrait:
-        case UIInterfaceOrientationPortraitUpsideDown:
-        case UIInterfaceOrientationLandscapeLeft:
-        case UIInterfaceOrientationLandscapeRight:{
-            CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
-            self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1);
-            [self reloadViews];
-            break;
-        }
-        case UIInterfaceOrientationUnknown:
-            break;
-        default:
-            NSLog(@"无法辨识");
-            break;
     }
 }
 #pragma mark UIInputViewAudioFeedback
