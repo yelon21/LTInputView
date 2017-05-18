@@ -78,7 +78,7 @@
 
 - (BOOL)shouldAutorotate {
     
-    return NO;
+    return YES;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
