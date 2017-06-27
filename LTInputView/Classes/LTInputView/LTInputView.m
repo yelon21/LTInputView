@@ -469,10 +469,10 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 - (void)setupChar{
     
 //    NSArray *line0 = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"0"];
-    NSArray *line1 = @[@"!",@"@",@"#",@"$",@"%",@"^",@"&",@"*",@"(",@")"];
-    NSArray *line2 = @[@"'",@"\"",@"=",@"_",@":",@";",@"?",@"~",@"`",@"|"];
-    NSArray *line3 = @[@"+",@"-",@"\\",@"/",@"[",@"]",@"{",@"}",@",",@"."];
-    NSArray *line4 = @[@"<",@">",@"€",@"￡",@"￥",@"·"];
+    NSArray *line1 = @[@"!",@"@",@"#",@"$",@"%",@"^",@"&",@"(",@")"];
+    NSArray *line2 = @[@"'",@"\"",@"=",@"_",@":",@";",@"?",@"~",@"`"];
+    NSArray *line3 = @[@"+",@"-",@"\\",@"/",@"[",@"]",@"{",@"}",@"*"];
+    NSArray *line4 = @[@"<",@">",@"|",@",",@"."];
     
     NSMutableArray *values = [[NSMutableArray alloc]initWithObjects:line1,line2,line3,line4,nil];
     
@@ -482,7 +482,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     CGFloat height = CGRectGetHeight(superView.bounds);
     
     NSInteger rowCount = 4;
-    NSInteger colCount = 10;
+    NSInteger colCount = line1.count;
     
     CGFloat cellW = (width-(colCount+1)*lineW)/colCount;
     CGFloat cellH = (height-(rowCount+1)*lineW)/rowCount;
@@ -538,7 +538,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
                 [changeBtn setTitle:@"ABC" forState:UIControlStateNormal];
                 
                 LTValueButton *delBtn = [self newValueButton];
-                delBtn.frame = CGRectMake(8*(cellW + lineW)+lineW, y, cellW*2 + lineW, cellH);
+                delBtn.frame = CGRectMake(7*(cellW + lineW)+lineW, y, cellW*2 + lineW, cellH);
                 [superView addSubview:delBtn];
                 
                 delBtn.tag = LTKeyType_delete;
