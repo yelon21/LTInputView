@@ -8,6 +8,8 @@
 
 #import "LTInputView.h"
 
+#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+
 #define topViewH 35.0
 #define contentkeysViewH 216.0
 #define lineW   5
@@ -217,9 +219,11 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 - (void)setup{
     
+    CGFloat deltBootom = KIsiPhoneX ? 34.0 : 0.0;
+    
     self.backgroundColor = [[UIColor lightGrayColor]colorWithAlphaComponent:0.1];
     CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
-    self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1);
+    self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1 + deltBootom);
     [self topView];
     [self reloadViews];
 }
