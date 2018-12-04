@@ -28,12 +28,20 @@
     inputView.textField = self.textField;
     inputView.inputType = LTInputType_alp;
     
-    [self.textField becomeFirstResponder];
+//    [self.textField becomeFirstResponder];
     
     LTInputView *inputView2 = [[LTInputView alloc]init];
     inputView2.title = @"安全输入";
     inputView2.textField = self.numberTF;
     inputView2.inputType = LTInputType_number;
+}
+
+
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    
+    NSLog(@"textField=%@",self.textField.text);
+    NSLog(@"numberTF=%@",self.numberTF.text);
+    [self.view endEditing:YES];
 }
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{

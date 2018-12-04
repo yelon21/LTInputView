@@ -13,7 +13,46 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    BOOL isCaptured = [mainScreen isCaptured];
+    
+    if (@available(iOS 11.0, *)) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(screenCapturedDidChangeNotification:)
+                                                     name:UIScreenCapturedDidChangeNotification
+                                                   object:nil];
+    } else {
+        // Fallback on earlier versions
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(screenCapturedDidChangeNotification:)
+                                                 name:UIApplicationUserDidTakeScreenshotNotification
+                                               object:nil];
+
     return YES;
+}
+
+- (void)screenCapturedDidChangeNotification:(NSNotification *)notification{
+    
+    NSLog(@"notification=%@",notification);
+    
+    if ([notification.name isEqualToString:UIScreenCapturedDidChangeNotification]) {
+        
+        UIScreen *screen = [notification object];
+        NSLog(@"captured=%@",@(screen.isCaptured));
+        NSLog(@"captured=%@",UIScreen.screens);
+    }
+    else if ([notification.name isEqualToString:UIApplicationUserDidTakeScreenshotNotification]) {
+        
+        UIApplication *application = [notification object];
+        [self.window endEditing:YES];
+    }
+    
+    
+    
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

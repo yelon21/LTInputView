@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,11 +13,11 @@
             buildForProfiling = "YES"
             buildForArchiving = "YES">
             <BuildableReference
-               BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '561FE110C5A0D98343FD9D6B3BDBDA49'
-               BlueprintName = 'LTInputView'
-               ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libLTInputView.a'>
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B10F4C054B6FEC50B6AFABB8A89C1B14"
+               BlueprintName = "LTInputView"
+               ReferencedContainer = "container:Pods.xcodeproj"
+               BuildableName = "libLTInputView.a">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

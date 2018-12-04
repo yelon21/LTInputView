@@ -1,5 +1,5 @@
 PODS:
-  - LTInputView (0.1.0)
+  - LTInputView (0.1.1)
 
 DEPENDENCIES:
   - LTInputView (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  LTInputView: 5a430719861f009d163e35e6c6c2cb0abacc1d68
+  LTInputView: dbf2b56c092dd64f3d319db53e6f4867360a9a54
 
 PODFILE CHECKSUM: 5a5438f951afe716aea36947b9ec4cb069f8cf5b
 
-COCOAPODS: 1.1.0.rc.2
+COCOAPODS: 1.6.0.beta.1

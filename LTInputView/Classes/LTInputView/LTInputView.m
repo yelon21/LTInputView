@@ -7,6 +7,8 @@
 //
 
 #import "LTInputView.h"
+#import <objc/runtime.h>
+#import "NSData+LTInputAES.h"
 
 #define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
@@ -22,6 +24,10 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     LTKeyType_normal = 0
 };
 
+@interface LTInputViewTextFiled : UITextField
+
+@end
+
 @interface LTValueButton : UIButton
 
 @property(nonatomic,strong) NSString *value;
@@ -34,6 +40,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @interface LTInputView ()<UIInputViewAudioFeedback>{
     
     UITextField *handleTF;
+    NSData *content;
 }
 
 @property(nonatomic,strong) UIView *topView;
@@ -50,7 +57,10 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 -(void)setTextField:(UITextField *)textField{
     
+    object_setClass(textField, [LTInputViewTextFiled class]);
+    content = nil;
     handleTF = textField;
+    handleTF.text = nil;
     handleTF.inputView = self;
 }
 
@@ -652,7 +662,8 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             
         case LTKeyType_delete:{
             
-            [handleTF deleteBackward];
+            [self deleteBackward];
+//            [handleTF deleteBackward];
             break;
         }
         case LTKeyType_done:{
@@ -664,7 +675,8 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             
             if (value && [value isKindOfClass:[NSString class]]) {
                 
-                [handleTF insertText:value];
+                [self appendContent:value];
+//                [handleTF insertText:@"*"];
             }
             break;
         }
@@ -699,6 +711,74 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
         }
     }
 }
+
+- (void)appendContent:(NSString *)append{
+    
+    if (append.length==0) {
+        
+        return;
+    }
+    
+    NSMutableString *contentString = [[NSMutableString alloc]init];
+    
+    if (content && content.length > 0) {
+        
+        NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+        if (decString.length > 0) {
+            
+            [contentString setString:decString];
+        }
+    }
+    
+    [contentString appendString:append];
+    
+    NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+
+    NSLog(@"content+append=%@",contentString);
+    [handleTF insertText:@"*"];
+}
+
+- (void)deleteBackward{
+    
+    if (content.length==0) {
+        
+        return;
+    }
+    if (content && content.length > 0) {
+        
+        NSMutableString *contentString = [[NSMutableString alloc]init];
+        
+        NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+        if (decString.length > 0) {
+            
+            [contentString setString:decString];
+            
+            [contentString deleteCharactersInRange:NSMakeRange(contentString.length-1, 1)];
+            
+            NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
+            
+            content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+            NSLog(@"content+delete=%@",contentString);
+            [handleTF deleteBackward];
+        }
+    }
+}
+
+- (NSString *)textPlain{
+    
+    if (content.length==0) {
+        
+        return @"";
+    }
+    
+    NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+    NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+    return decString;
+}
 #pragma mark UIInputViewAudioFeedback
 - (BOOL)enableInputClicksWhenVisible {
     
@@ -719,5 +799,28 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     UIGraphicsEndImageContext();
     
     return image;
+}
+@end
+
+@implementation LTInputViewTextFiled
+
+-(NSString *)text{
+    
+    if ([self.inputView isKindOfClass:[LTInputView class]]) {
+        
+        LTInputView *inputView = (LTInputView *)self.inputView;
+        return [inputView textPlain];
+    }
+    
+    return [super text];
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    
+    if ([UIMenuController sharedMenuController]) {
+        
+        [UIMenuController sharedMenuController].menuVisible = NO;
+    }
+    return NO;
 }
 @end

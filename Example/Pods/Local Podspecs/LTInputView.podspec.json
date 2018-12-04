@@ -1,6 +1,6 @@
 {
   "name": "LTInputView",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "summary": "个人键盘工具",
   "description": "个人键盘工具,持续更新ing",
   "homepage": "https://github.com/yelon21/LTInputView",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/yelon21/LTInputView.git",
-    "tag": "0.1.0"
+    "tag": "0.1.1"
   },
   "platforms": {
     "ios": "6.0"
