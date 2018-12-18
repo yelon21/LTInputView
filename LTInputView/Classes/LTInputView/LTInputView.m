@@ -757,7 +757,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     
     content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
 
-    NSLog(@"content+append=%@",contentString);
     [handleTF insertText:@"*"];
 }
 
@@ -782,7 +781,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
             
             content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-            NSLog(@"content+delete=%@",contentString);
+            
             [handleTF deleteBackward];
         }
     }
