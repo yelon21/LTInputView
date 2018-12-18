@@ -22,7 +22,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
+    self.textField.clearsOnBeginEditing = YES;
     LTInputView *inputView = [[LTInputView alloc]init];
     inputView.title = @"安全输入";
     inputView.textField = self.textField;

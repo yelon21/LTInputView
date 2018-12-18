@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 @interface LTInputViewTextFiled : UITextField
 
+@property(nonatomic,assign,readonly) NSString *superText;
 @end
 
 @interface LTValueButton : UIButton
@@ -39,7 +40,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 @interface LTInputView ()<UIInputViewAudioFeedback>{
     
-    UITextField *handleTF;
+    LTInputViewTextFiled *handleTF;
     NSData *content;
 }
 
@@ -50,18 +51,37 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 @implementation LTInputView
 
--(UITextField *)textField{
+-(LTInputViewTextFiled *)textField{
     
     return handleTF;
 }
 
 -(void)setTextField:(UITextField *)textField{
     
+    if (handleTF == textField) {
+        
+        return;
+    }
     object_setClass(textField, [LTInputViewTextFiled class]);
     content = nil;
-    handleTF = textField;
+    handleTF = (LTInputViewTextFiled *)textField;
     handleTF.text = nil;
     handleTF.inputView = self;
+    [handleTF addTarget:self
+                 action:@selector(editingDidBegin)
+       forControlEvents:UIControlEventEditingDidBegin];
+}
+
+- (void)editingDidBegin{
+    
+    NSUInteger tfLen = [[handleTF superText] length];
+    NSUInteger contentLength = [[handleTF text] length];
+    
+    if (tfLen != contentLength) {
+        
+        handleTF.text = nil;
+        content = nil;
+    }
 }
 
 -(void)setTitle:(NSString *)title{
@@ -803,6 +823,11 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @end
 
 @implementation LTInputViewTextFiled
+
+-(NSString *)superText{
+    
+    return [super text];
+}
 
 -(NSString *)text{
     

@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
-            timestampString = "565600972.4292459"
+            timestampString = "566812330.242209"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "637"
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
-            timestampString = "565600972.4298151"
+            timestampString = "566812330.2426209"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "536"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
-            timestampString = "565600972.430117"
+            timestampString = "566812330.242848"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "609"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
-            timestampString = "565600972.43053"
+            timestampString = "566812330.2431411"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "739"
@@ -106,12 +106,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
-            timestampString = "565600972.430863"
+            timestampString = "566812330.243367"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "746"
             endingLineNumber = "746"
-            landmarkName = "-deleteBackward"
+            landmarkName = "-appendContent:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
+            timestampString = "566812330.243578"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "-editingDidBegin"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "LTInputView/LYViewController.m"
+            timestampString = "566812409.186972"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "-touchesBegan:withEvent:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
