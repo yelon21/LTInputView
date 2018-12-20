@@ -17,6 +17,8 @@ typedef NS_ENUM(NSInteger, LTInputType) {
     LTInputType_number = -4//纯数字
 };
 
+NSString *LTInputViewPlainText(UITextField *textField);
+
 @interface LTInputView : UIView
 
 @property(nonatomic,assign)UITextField *textField;

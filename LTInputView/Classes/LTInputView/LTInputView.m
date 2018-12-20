@@ -26,7 +26,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 @interface LTInputViewTextFiled : UITextField
 
-@property(nonatomic,assign,readonly) NSString *superText;
 @end
 
 @interface LTValueButton : UIButton
@@ -41,13 +40,23 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @interface LTInputView ()<UIInputViewAudioFeedback>{
     
     LTInputViewTextFiled *handleTF;
-    NSData *content;
 }
 
 @property(nonatomic,strong) UIView *topView;
 @property(nonatomic,strong) UIView *contentkeysView;
 @property(nonatomic,strong) UILabel *titleLabel;
+@property(nonatomic,assign,readonly)NSString *textPlain;
+@property(nonatomic,strong) NSData *content;
 @end
+
+NSString *LTInputViewPlainText(UITextField *textField){
+    
+    if (![textField isKindOfClass:[LTInputViewTextFiled class]]) {
+        
+        return @"";
+    }
+    return [(LTInputView *)textField.inputView textPlain];
+}
 
 @implementation LTInputView
 
@@ -63,9 +72,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
         return;
     }
     object_setClass(textField, [LTInputViewTextFiled class]);
-    content = nil;
     handleTF = (LTInputViewTextFiled *)textField;
-    handleTF.text = nil;
     handleTF.inputView = self;
     [handleTF addTarget:self
                  action:@selector(editingDidBegin)
@@ -74,14 +81,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 - (void)editingDidBegin{
     
-    NSUInteger tfLen = [[handleTF superText] length];
-    NSUInteger contentLength = [[handleTF text] length];
-    
-    if (tfLen != contentLength) {
-        
-        handleTF.text = nil;
-        content = nil;
-    }
+    handleTF.text = nil;
 }
 
 -(void)setTitle:(NSString *)title{
@@ -683,7 +683,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
         case LTKeyType_delete:{
             
             [self deleteBackward];
-//            [handleTF deleteBackward];
             break;
         }
         case LTKeyType_done:{
@@ -696,7 +695,6 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             if (value && [value isKindOfClass:[NSString class]]) {
                 
                 [self appendContent:value];
-//                [handleTF insertText:@"*"];
             }
             break;
         }
@@ -741,9 +739,9 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     
     NSMutableString *contentString = [[NSMutableString alloc]init];
     
-    if (content && content.length > 0) {
+    if (self.content && self.content.length > 0) {
         
-        NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
         NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
         if (decString.length > 0) {
             
@@ -755,22 +753,18 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
     
     NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
     
-    content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+    self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
 
     [handleTF insertText:@"*"];
 }
 
 - (void)deleteBackward{
     
-    if (content.length==0) {
-        
-        return;
-    }
-    if (content && content.length > 0) {
+    if (self.content && self.content.length > 0) {
         
         NSMutableString *contentString = [[NSMutableString alloc]init];
         
-        NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
         NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
         if (decString.length > 0) {
             
@@ -780,21 +774,21 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
             
             NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
             
-            content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-            
-            [handleTF deleteBackward];
+            self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
         }
     }
+    
+    [handleTF deleteBackward];
 }
 
 - (NSString *)textPlain{
     
-    if (content.length==0) {
+    if (self.content.length==0) {
         
         return @"";
     }
     
-    NSData *decData = [content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+    NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
     NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
     return decString;
 }
@@ -823,20 +817,16 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 
 @implementation LTInputViewTextFiled
 
--(NSString *)superText{
-    
-    return [super text];
-}
+-(void)setText:(NSString *)text{
 
--(NSString *)text{
-    
-    if ([self.inputView isKindOfClass:[LTInputView class]]) {
+    LTInputView *inputView = (LTInputView *)self.inputView;
+    inputView.content = nil;
+    NSUInteger len = [self.text length];
+    while (len>0) {
         
-        LTInputView *inputView = (LTInputView *)self.inputView;
-        return [inputView textPlain];
+        [inputView deleteBackward];
+        len--;
     }
-    
-    return [super text];
 }
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
