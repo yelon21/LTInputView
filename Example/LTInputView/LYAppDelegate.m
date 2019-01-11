@@ -15,9 +15,11 @@
     // Override point for customization after application launch.
     
     UIScreen *mainScreen = [UIScreen mainScreen];
-    BOOL isCaptured = [mainScreen isCaptured];
     
     if (@available(iOS 11.0, *)) {
+        
+        BOOL isCaptured = [mainScreen isCaptured];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(screenCapturedDidChangeNotification:)
                                                      name:UIScreenCapturedDidChangeNotification

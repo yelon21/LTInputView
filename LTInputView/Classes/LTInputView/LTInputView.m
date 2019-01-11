@@ -818,15 +818,35 @@ NSString *LTInputViewPlainText(UITextField *textField){
 @implementation LTInputViewTextFiled
 
 -(void)setText:(NSString *)text{
-
-    LTInputView *inputView = (LTInputView *)self.inputView;
-    inputView.content = nil;
-    NSUInteger len = [self.text length];
-    while (len>0) {
+    
+    do {
         
-        [inputView deleteBackward];
-        len--;
-    }
+        NSUInteger len = LTInputViewPlainText(self).length;
+        
+        if (text && [text isKindOfClass:[NSString class]]) {
+            
+            NSString *ss = [NSString stringWithFormat:@"^\\*{%ld}$", len];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", ss];
+            
+            BOOL flag = [predicate evaluateWithObject:text];
+            
+            if (flag) {
+                
+                [super setText:text];
+                break;
+            }
+        }
+        
+        LTInputView *inputView = (LTInputView *)self.inputView;
+        inputView.content = nil;
+        len = MAX([self.text length], len);
+        while (len>0) {
+            
+            [inputView deleteBackward];
+            len--;
+        }
+        
+    } while (NO);
 }
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
