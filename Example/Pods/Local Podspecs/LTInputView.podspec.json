@@ -16,7 +16,7 @@
     "tag": "0.1.1"
   },
   "platforms": {
-    "ios": "6.0"
+    "ios": "8.0"
   },
   "source_files": "LTInputView/Classes/**/*",
   "resources": "LTInputView/Assets/**/*.png"

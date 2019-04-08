@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9F3A06615ACA6AEAC38B5A4C92F1E46"
+               BlueprintIdentifier = "6380837758BA806E93BA8BCE1291145D"
+               BuildableName = "libPods-LTInputView_Example.a"
                BlueprintName = "Pods-LTInputView_Example"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libPods-LTInputView_Example.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

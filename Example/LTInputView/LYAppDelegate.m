@@ -43,8 +43,6 @@
     if ([notification.name isEqualToString:UIScreenCapturedDidChangeNotification]) {
         
         UIScreen *screen = [notification object];
-        NSLog(@"captured=%@",@(screen.isCaptured));
-        NSLog(@"captured=%@",UIScreen.screens);
     }
     else if ([notification.name isEqualToString:UIApplicationUserDidTakeScreenshotNotification]) {
         

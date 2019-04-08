@@ -66,7 +66,7 @@
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		BA695D2C27FAB27473A8686E /* Pods-LTInputView_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LTInputView_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LTInputView_Tests/Pods-LTInputView_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		D6029078121C0E1ED2572BA5 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		D84B1EE955664E5C0AD1628A /* LTInputView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LTInputView.podspec; path = ../LTInputView.podspec; sourceTree = "<group>"; };
+		D84B1EE955664E5C0AD1628A /* LTInputView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LTInputView.podspec; path = ../LTInputView.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,6 +261,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

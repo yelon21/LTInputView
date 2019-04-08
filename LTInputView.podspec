@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/yelon21/LTInputView.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '6.0'
+  s.ios.deployment_target = '8.0'
 
   s.source_files = 'LTInputView/Classes/**/*'
   s.resource     = "LTInputView/Assets/**/*.png"

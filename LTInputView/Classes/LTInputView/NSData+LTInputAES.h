@@ -7,8 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface NSData (LTInputAES)
 
 - (NSData *)lt_aes256EncryptWithKey:(NSString *)key;
@@ -16,5 +14,3 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSData *)lt_aes256DecryptWithKey:(NSString *)key;
 
 @end
-
-NS_ASSUME_NONNULL_END
