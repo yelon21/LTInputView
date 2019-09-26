@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @interface LTInputView ()<UIInputViewAudioFeedback>{
     
     LTInputViewTextFiled *handleTF;
+    BOOL isUpper;
 }
 
 @property(nonatomic,strong) UIView *topView;
@@ -101,7 +102,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
         _titleLabel = [[UILabel alloc]init];
         _titleLabel.font = [UIFont systemFontOfSize:14.0];
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.textColor = [UIColor grayColor];
+        _titleLabel.textColor = [UIColor systemGrayColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.text = @"安全输入";
     }
@@ -115,7 +116,11 @@ NSString *LTInputViewPlainText(UITextField *textField){
         CGFloat width = CGRectGetWidth(self.bounds);
         
         _topView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, width, topViewH)];
-        _topView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
+        if (@available(iOS 13.0, *)) {
+            _topView.backgroundColor = [[UIColor tertiarySystemBackgroundColor] colorWithAlphaComponent:0.5];
+        } else {
+            _topView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
+        }
         [self addSubview:_topView];
         _topView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         
@@ -164,8 +169,13 @@ NSString *LTInputViewPlainText(UITextField *textField){
         btn.layer.masksToBounds = NO;
         [btn setBackgroundImage:nil
                        forState:UIControlStateNormal];
-        [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
-                       forState:UIControlStateHighlighted];
+        if (@available(iOS 13.0, *)) {
+            [btn setBackgroundImage:[self imageWithColor:[UIColor secondarySystemGroupedBackgroundColor]]
+                           forState:UIControlStateHighlighted];
+        } else {
+            [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
+                           forState:UIControlStateHighlighted];
+        }
         
         btn.tag = LTKeyType_done;
         [btn setTitle:@"完成" forState:UIControlStateNormal];
@@ -250,8 +260,12 @@ NSString *LTInputViewPlainText(UITextField *textField){
 - (void)setup{
     
     CGFloat deltBootom = KIsiPhoneX ? 34.0 : 0.0;
-    
-    self.backgroundColor = [[UIColor lightGrayColor]colorWithAlphaComponent:0.1];
+    isUpper = NO;
+    if (@available(iOS 13.0, *)) {
+        self.backgroundColor = [[UIColor secondarySystemGroupedBackgroundColor] colorWithAlphaComponent:0.5];
+    } else {
+        self.backgroundColor = [[UIColor lightTextColor] colorWithAlphaComponent:0.1];
+    }
     CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
     self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1 + deltBootom);
     [self topView];
@@ -357,22 +371,29 @@ NSString *LTInputViewPlainText(UITextField *textField){
 
 - (LTValueButton *)newValueButton{
     
-    LTValueButton *btn = [LTValueButton new];
+    LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeSystem];
     
-    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-//    [btn setTitleColor:[UIColor blackColor] forState:UIControlStateSelected];
+    if (@available(iOS 13.0, *)) {
+        [btn setTintColor:[UIColor labelColor]];
+    } else {
+        [btn setTintColor:[UIColor blackColor]];
+    }
     
     [btn addTarget:self
             action:@selector(keyPressed:)
   forControlEvents:UIControlEventTouchUpInside];
     
-    [btn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
-                   forState:UIControlStateNormal];
-    [btn setBackgroundImage:[self imageWithColor:[UIColor colorWithWhite:1.0 alpha:0.5]]
-                   forState:UIControlStateHighlighted];
-    [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
-                   forState:UIControlStateSelected];
+    if (@available(iOS 13.0, *)) {
+        [btn setBackgroundImage:[self imageWithColor:[UIColor systemGroupedBackgroundColor]]
+                       forState:UIControlStateNormal];
+    } else {
+        
+        [btn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
+        forState:UIControlStateNormal];
+    }
+
+    [btn setBackgroundImage:[self imageWithColor:[UIColor systemBlueColor]]
+                                  forState:UIControlStateSelected];
     
     btn.layer.cornerRadius = 5.0;
     btn.layer.masksToBounds = YES;
@@ -440,15 +461,13 @@ NSString *LTInputViewPlainText(UITextField *textField){
                 LTValueButton *upperBtn = [self newValueButton];
                 upperBtn.frame = CGRectMake(lineW, y, 1.5*cellW+lineW*0.5, cellH);
                 [superView addSubview:upperBtn];
-                
-                [upperBtn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
-                               forState:UIControlStateSelected];
-                
                 upperBtn.tag = LTKeyType_upper;
+                upperBtn.selected = isUpper;
+
                 [upperBtn setImage:[UIImage imageNamed:@"upper0"]
-                        forState:UIControlStateNormal];
+                                            forState:UIControlStateNormal];
                 [upperBtn setImage:[UIImage imageNamed:@"upper1"]
-                        forState:UIControlStateSelected];
+                                            forState:UIControlStateSelected];
                 
                 LTValueButton *delBtn = [self newValueButton];
                 delBtn.frame = CGRectMake((cellW+lineW)*8.5+lineW, y, 1.5*cellW+lineW*0.5, cellH);
@@ -493,8 +512,12 @@ NSString *LTInputViewPlainText(UITextField *textField){
                 [superView addSubview:btn];
                 
                 btn.tag = LTKeyType_normal;
-                btn.value = values[row][col];
-                [btn setTitle:btn.value forState:UIControlStateNormal];
+                NSString *value = values[row][col];
+                if (isUpper) {
+                    value = [value uppercaseString];
+                }
+                btn.value = value;
+                [btn setTitle:value forState:UIControlStateNormal];
             }
         }
     }
@@ -700,8 +723,9 @@ NSString *LTInputViewPlainText(UITextField *textField){
         }
         case LTKeyType_upper:{
             
-            btn.selected = !btn.selected;
-            [self showAlphabetUpper:btn.selected];
+            isUpper = !isUpper;
+            btn.selected = isUpper;
+            [self showAlphabetUpper:isUpper];
             break;
         }
         case LTKeyType_change:{

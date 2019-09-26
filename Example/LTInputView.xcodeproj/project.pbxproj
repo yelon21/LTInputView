@@ -248,7 +248,7 @@
 				ORGANIZATIONNAME = yelon21;
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
-						DevelopmentTeam = U7DFNWQBUU;
+						DevelopmentTeam = SEX9UQR699;
 						ProvisioningStyle = Manual;
 					};
 					6003F5AD195388D20070C39A = {
@@ -497,7 +497,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = U7DFNWQBUU;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = SEX9UQR699;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LTInputView/LTInputView-Prefix.pch";
 				INFOPLIST_FILE = "LTInputView/LTInputView-Info.plist";
@@ -506,7 +507,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "8c0dd060-f9a6-4c2e-ba43-1a5a77b89954";
-				PROVISIONING_PROFILE_SPECIFIER = debug_any;
+				PROVISIONING_PROFILE_SPECIFIER = debug_any_flm;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
