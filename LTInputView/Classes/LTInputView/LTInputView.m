@@ -100,7 +100,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     if (!_titleLabel) {
         
         _titleLabel = [[UILabel alloc]init];
-        _titleLabel.font = [UIFont systemFontOfSize:14.0];
+        _titleLabel.font = [UIFont systemFontOfSize:16.0];
         _titleLabel.backgroundColor = [UIColor clearColor];
         _titleLabel.textColor = [UIColor systemGrayColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -179,6 +179,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
         
         btn.tag = LTKeyType_done;
         [btn setTitle:@"完成" forState:UIControlStateNormal];
+        btn.titleLabel.font = [UIFont systemFontOfSize:16];
         btn.translatesAutoresizingMaskIntoConstraints = NO;
         [_topView addSubview:btn];
         
@@ -372,6 +373,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
 - (LTValueButton *)newValueButton{
     
     LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeSystem];
+    btn.titleLabel.font = [UIFont systemFontOfSize:20];
     
     if (@available(iOS 13.0, *)) {
         [btn setTintColor:[UIColor labelColor]];
