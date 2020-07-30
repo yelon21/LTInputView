@@ -769,18 +769,20 @@ NSString *LTInputViewPlainText(UITextField *textField){
         
         NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
         NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+        [self clearObjectContent:decData];
         if (decString.length > 0) {
             
             [contentString setString:decString];
         }
+        [self clearObjectContent:decString];
     }
     
     [contentString appendString:append];
     
     NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
-    
+    [self clearObjectContent:contentString];
     self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-
+    [self clearObjectContent:contentData];
     [handleTF insertText:@"*"];
 }
 
@@ -792,15 +794,20 @@ NSString *LTInputViewPlainText(UITextField *textField){
         
         NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
         NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+        [self clearObjectContent:decData];
+        
         if (decString.length > 0) {
             
             [contentString setString:decString];
+            [self clearObjectContent:decString];
             
             [contentString deleteCharactersInRange:NSMakeRange(contentString.length-1, 1)];
-            
+
             NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
             
+            [self clearObjectContent:contentString];
             self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+            [self clearObjectContent:contentData];
         }
     }
     
@@ -816,6 +823,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     
     NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
     NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+    [self clearObjectContent:decData];
     return decString;
 }
 #pragma mark UIInputViewAudioFeedback
@@ -839,6 +847,50 @@ NSString *LTInputViewPlainText(UITextField *textField){
     
     return image;
 }
+
+- (void)clearObjectContent:(NSObject *)obj{
+    
+    if ([obj isKindOfClass:[NSData class]]) {
+        
+        unsigned long long address = (unsigned long long)[(NSData *)obj bytes];
+        long size = [(NSData *)obj length];
+        obj = nil;
+        memset((void *)address,0, size);
+    }
+    else if ([obj isKindOfClass:[NSString class]]){
+        
+        CFStringRef stringRef = (__bridge CFStringRef)(NSString *)obj;
+        int size = (int)[(NSString *)obj lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        
+        const void * address  = CFStringGetCStringPtr(stringRef, kCFStringEncodingUTF8);
+        if (address == NULL) {
+            
+            return;
+        }
+        if ((unsigned long long)address > 0xffffffffff) {
+            
+            return;
+        }
+        obj = nil;
+        
+        memset((void *)address,0, size);
+    }
+}
+
+- (long)address:(NSObject *)obj{
+    
+    NSString *address = [NSString stringWithFormat:@"%p", obj];
+
+    const char* pp = [address cStringUsingEncoding:NSUTF8StringEncoding];
+//    char* str;
+//    long i = strtol(pp, &str, 16);
+    unsigned long long  value = 0;
+    sscanf(pp, "%llx", &value);
+    NSLog(@"%@=%llu",obj, value);
+
+    return value;
+}
+
 @end
 
 @implementation LTInputViewTextFiled
