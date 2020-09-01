@@ -180,13 +180,13 @@ NSString *LTInputViewPlainText(UITextField *textField){
         btn.layer.masksToBounds = NO;
         [btn setBackgroundImage:nil
                        forState:UIControlStateNormal];
-        if (@available(iOS 13.0, *)) {
-            [btn setBackgroundImage:[self imageWithColor:[UIColor secondarySystemGroupedBackgroundColor]]
-                           forState:UIControlStateHighlighted];
-        } else {
-            [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
-                           forState:UIControlStateHighlighted];
-        }
+//        if (@available(iOS 13.0, *)) {
+//            [btn setBackgroundImage:[self imageWithColor:[UIColor secondarySystemGroupedBackgroundColor]]
+//                           forState:UIControlStateHighlighted];
+//        } else {
+//            [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
+//                           forState:UIControlStateHighlighted];
+//        }
         
         btn.tag = LTKeyType_done;
         [btn setTitle:@"完成" forState:UIControlStateNormal];
@@ -383,27 +383,35 @@ NSString *LTInputViewPlainText(UITextField *textField){
 
 - (LTValueButton *)newValueButton{
     
-    LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeSystem];
+    LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeCustom];
     btn.titleLabel.font = [UIFont systemFontOfSize:20];
     
     if (@available(iOS 13.0, *)) {
-        [btn setTintColor:[UIColor labelColor]];
+        [btn setTitleColor:[UIColor labelColor]
+                  forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor labelColor]
+                  forState:UIControlStateHighlighted];
+        btn.backgroundColor = [UIColor systemGroupedBackgroundColor];
     } else {
-        [btn setTintColor:[UIColor blackColor]];
+        [btn setTitleColor:[UIColor blackColor]
+                  forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor blackColor]
+                  forState:UIControlStateHighlighted];
+        btn.backgroundColor = [UIColor whiteColor];
     }
     
     [btn addTarget:self
             action:@selector(keyPressed:)
   forControlEvents:UIControlEventTouchUpInside];
     
-    if (@available(iOS 13.0, *)) {
-        [btn setBackgroundImage:[self imageWithColor:[UIColor systemGroupedBackgroundColor]]
-                       forState:UIControlStateNormal];
-    } else {
-        
-        [btn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
-        forState:UIControlStateNormal];
-    }
+//    if (@available(iOS 13.0, *)) {
+//        [btn setBackgroundImage:[self imageWithColor:[UIColor systemGroupedBackgroundColor]]
+//                       forState:UIControlStateNormal];
+//    } else {
+//
+//        [btn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
+//        forState:UIControlStateNormal];
+//    }
 
     [btn setBackgroundImage:[self imageWithColor:[UIColor systemBlueColor]]
                                   forState:UIControlStateSelected];

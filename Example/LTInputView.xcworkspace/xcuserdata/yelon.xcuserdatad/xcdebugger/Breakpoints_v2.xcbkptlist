@@ -48,8 +48,8 @@
             filePath = "../LTInputView/Classes/LTInputView/LTInputView.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "864"
-            endingLineNumber = "864"
+            startingLineNumber = "872"
+            endingLineNumber = "872"
             landmarkName = "-textPlain"
             landmarkType = "7">
          </BreakpointContent>
