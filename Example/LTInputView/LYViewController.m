@@ -39,8 +39,8 @@
 
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     
-    NSLog(@"textField=%@",self.textField.text);
-    NSLog(@"numberTF=%@",self.numberTF.text);
+    NSLog(@"textField=%@",LTInputViewPlainText(self.textField));
+    NSLog(@"numberTF=%@",LTInputViewPlainText(self.numberTF));
     [self.view endEditing:YES];
 }
 

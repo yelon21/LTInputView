@@ -47,7 +47,8 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @property(nonatomic,strong) UIView *contentkeysView;
 @property(nonatomic,strong) UILabel *titleLabel;
 @property(nonatomic,assign,readonly)NSString *textPlain;
-@property(nonatomic,strong) NSData *content;
+
+@property(nonatomic,strong, readonly) NSMutableArray *contentArray;
 @end
 
 NSString *LTInputViewPlainText(UITextField *textField){
@@ -60,6 +61,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
 }
 
 @implementation LTInputView
+@synthesize contentArray = _contentArray;
 
 -(LTInputViewTextFiled *)textField{
     
@@ -107,6 +109,15 @@ NSString *LTInputViewPlainText(UITextField *textField){
         _titleLabel.text = @"安全输入";
     }
     return _titleLabel;
+}
+
+-(NSMutableArray *)contentArray{
+    
+    if (!_contentArray) {
+        
+        _contentArray = [[NSMutableArray alloc] init];
+    }
+    return _contentArray;
 }
 
 - (UIView *)topView{
@@ -762,69 +773,98 @@ NSString *LTInputViewPlainText(UITextField *textField){
         
         return;
     }
+    NSData *data = [append dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *encData = [data lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+    [self clearObjectContent:data];
+    [self.contentArray addObject:encData];
     
-    NSMutableString *contentString = [[NSMutableString alloc]init];
+//    NSMutableString *contentString = [[NSMutableString alloc]init];
+//
+//    if (self.content && self.content.length > 0) {
+//
+//        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+//        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+//        [self clearObjectContent:decData];
+//        if (decString.length > 0) {
+//
+//            [contentString setString:decString];
+//        }
+//        [self clearObjectContent:decString];
+//    }
+//
+//    [contentString appendString:append];
+//
+//    NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
+//    [self clearObjectContent:contentString];
+//    self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+//    [self clearObjectContent:contentData];
     
-    if (self.content && self.content.length > 0) {
-        
-        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-        [self clearObjectContent:decData];
-        if (decString.length > 0) {
-            
-            [contentString setString:decString];
-        }
-        [self clearObjectContent:decString];
-    }
-    
-    [contentString appendString:append];
-    
-    NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
-    [self clearObjectContent:contentString];
-    self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-    [self clearObjectContent:contentData];
     [handleTF insertText:@"*"];
 }
 
 - (void)deleteBackward{
     
-    if (self.content && self.content.length > 0) {
+    if (self.contentArray.count>0) {
         
-        NSMutableString *contentString = [[NSMutableString alloc]init];
-        
-        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-        [self clearObjectContent:decData];
-        
-        if (decString.length > 0) {
-            
-            [contentString setString:decString];
-            [self clearObjectContent:decString];
-            
-            [contentString deleteCharactersInRange:NSMakeRange(contentString.length-1, 1)];
-
-            NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
-            
-            [self clearObjectContent:contentString];
-            self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-            [self clearObjectContent:contentData];
-        }
+        [self.contentArray removeLastObject];
     }
+    
+//    if (self.content && self.content.length > 0) {
+//
+//        NSMutableString *contentString = [[NSMutableString alloc]init];
+//
+//        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+//        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+//        [self clearObjectContent:decData];
+//
+//        if (decString.length > 0) {
+//
+//            [contentString setString:decString];
+//            [self clearObjectContent:decString];
+//
+//            [contentString deleteCharactersInRange:NSMakeRange(contentString.length-1, 1)];
+//
+//            NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
+//
+//            [self clearObjectContent:contentString];
+//            self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+//            [self clearObjectContent:contentData];
+//        }
+//    }
     
     [handleTF deleteBackward];
 }
 
 - (NSString *)textPlain{
     
-    if (self.content.length==0) {
+//    if (self.content.length==0) {
+//
+//        return @"";
+//    }
+    
+//    NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+//    NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
+//    [self clearObjectContent:decData];
+    
+    if (self.contentArray.count==0) {
         
         return @"";
     }
+    NSMutableString *plain = [[NSMutableString alloc] init];
     
-    NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-    NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-    [self clearObjectContent:decData];
-    return decString;
+    [self.contentArray enumerateObjectsUsingBlock:^(NSData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSData *plainData = [obj lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSString *plainString = [[NSString alloc] initWithData:plainData encoding:NSUTF8StringEncoding];
+        [self clearObjectContent:plainData];
+        [plain appendString:plainString];
+        [self clearObjectContent:plainString];
+    }];
+    
+    NSString *decStr = [NSString stringWithString:plain];
+    [self clearObjectContent:plain];
+    
+    return decStr;
 }
 #pragma mark UIInputViewAudioFeedback
 - (BOOL)enableInputClicksWhenVisible {
@@ -916,7 +956,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
         }
         
         LTInputView *inputView = (LTInputView *)self.inputView;
-        inputView.content = nil;
+        [inputView.contentArray removeAllObjects];
         len = MAX([self.text length], len);
         while (len>0) {
             
