@@ -9,8 +9,11 @@
 
 @interface NSData (LTInputAES)
 
-- (NSData *)lt_aes256EncryptWithKey:(NSString *)key;
++ (NSData *)randomBytes:(const int)size;
 
-- (NSData *)lt_aes256DecryptWithKey:(NSString *)key;
+//- (NSData *)lt_aes256EncryptWithKey:(NSString *)key;
+- (NSData *)lt_aes256EncryptWithKeyBytes:(const void *)key;
 
+//- (NSData *)lt_aes256DecryptWithKey:(NSString *)key;
+- (NSData *)lt_aes256DecryptWithKeyBytes:(const void *)key;
 @end

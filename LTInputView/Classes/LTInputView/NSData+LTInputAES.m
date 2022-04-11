@@ -29,6 +29,19 @@ NSString *LTInput_FilterString(id obj){
 
 @implementation NSData (LTInputAES)
 
++ (NSData *)randomBytes:(const int)size{
+    
+    uint8_t randomBytes[size];
+    int result = SecRandomCopyBytes(kSecRandomDefault, size, randomBytes);
+    if (result == errSecSuccess) {
+        
+        NSData *randomData = [[NSData alloc] initWithBytes:randomBytes length:size];
+        return randomData;
+    } else {
+        return nil;
+    }
+}
+
 - (NSData *)lt_aes256EncryptWithKey:(NSString *)key {
     
     if (!self) {
@@ -47,6 +60,16 @@ NSString *LTInput_FilterString(id obj){
     
     [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
     
+    return [self lt_aes256EncryptWithKeyBytes:keyPtr];
+}
+
+- (NSData *)lt_aes256EncryptWithKeyBytes:(const void *)key {
+    
+    if (!self) {
+        
+        return nil;
+    }
+    
     NSUInteger dataLength = [self length];
     
     size_t bufferSize = dataLength + kCCBlockSizeAES128;
@@ -54,7 +77,7 @@ NSString *LTInput_FilterString(id obj){
     
     size_t numBytesEncrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding|kCCOptionECBMode,
-                                          keyPtr, kCCKeySizeAES256,
+                                          key, kCCKeySizeAES256,
                                           NULL /* initialization vector (optional) */,
                                           [self bytes], dataLength, /* input */
                                           buffer, bufferSize, /* output */
@@ -87,6 +110,16 @@ NSString *LTInput_FilterString(id obj){
     bzero(keyPtr, sizeof(keyPtr));
     
     [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
+
+    return [self lt_aes256DecryptWithKeyBytes:keyPtr];
+}
+
+- (NSData *)lt_aes256DecryptWithKeyBytes:(const void *)key {
+    
+    if (!self) {
+        
+        return nil;
+    }
     
     NSUInteger dataLength = [self length];
     
@@ -95,7 +128,7 @@ NSString *LTInput_FilterString(id obj){
     
     size_t numBytesDecrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding|kCCOptionECBMode,
-                                          keyPtr, kCCKeySizeAES256,
+                                          key, kCCKeySizeAES256,
                                           NULL /* initialization vector (optional) */,
                                           [self bytes], dataLength, /* input */
                                           buffer, bufferSize, /* output */

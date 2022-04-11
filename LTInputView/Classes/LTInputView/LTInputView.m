@@ -10,8 +10,6 @@
 #import <objc/runtime.h>
 #import "NSData+LTInputAES.h"
 
-#define KIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
-
 #define topViewH 35.0
 #define contentkeysViewH 216.0
 #define lineW   5
@@ -40,6 +38,7 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 @interface LTInputView ()<UIInputViewAudioFeedback>{
     
     LTInputViewTextFiled *handleTF;
+    NSData *rKey;
     BOOL isUpper;
 }
 
@@ -140,20 +139,6 @@ NSString *LTInputViewPlainText(UITextField *textField){
         titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [_topView addSubview:titleLabel];
         
-//        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
-//                                                             attribute:NSLayoutAttributeTop
-//                                                             relatedBy:NSLayoutRelationEqual
-//                                                                toItem:_topView
-//                                                             attribute:NSLayoutAttributeTop
-//                                                            multiplier:1.0
-//                                                              constant:0.0]];
-//        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
-//                                                             attribute:NSLayoutAttributeBottom
-//                                                             relatedBy:NSLayoutRelationEqual
-//                                                                toItem:_topView
-//                                                             attribute:NSLayoutAttributeBottom
-//                                                            multiplier:1.0
-//                                                              constant:0.0]];
         [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
                                                              attribute:NSLayoutAttributeCenterX
                                                              relatedBy:NSLayoutRelationEqual
@@ -168,25 +153,11 @@ NSString *LTInputViewPlainText(UITextField *textField){
                                                              attribute:NSLayoutAttributeCenterY
                                                             multiplier:1.0
                                                               constant:0.0]];
-//        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
-//                                                             attribute:NSLayoutAttributeWidth
-//                                                             relatedBy:NSLayoutRelationEqual
-//                                                                toItem:nil
-//                                                             attribute:NSLayoutAttributeNotAnAttribute
-//                                                            multiplier:1.0
-//                                                              constant:200.0]];
         
         LTValueButton *btn = [self newValueButton];
         btn.layer.masksToBounds = NO;
         [btn setBackgroundImage:nil
                        forState:UIControlStateNormal];
-//        if (@available(iOS 13.0, *)) {
-//            [btn setBackgroundImage:[self imageWithColor:[UIColor secondarySystemGroupedBackgroundColor]]
-//                           forState:UIControlStateHighlighted];
-//        } else {
-//            [btn setBackgroundImage:[self imageWithColor:[UIColor lightTextColor]]
-//                           forState:UIControlStateHighlighted];
-//        }
         
         btn.tag = LTKeyType_done;
         [btn setTitle:@"完成" forState:UIControlStateNormal];
@@ -260,6 +231,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
 
 -(void)layoutSubviews{
 
+    [super layoutSubviews];
     [self reloadViews];
 }
 
@@ -271,7 +243,17 @@ NSString *LTInputViewPlainText(UITextField *textField){
 
 - (void)setup{
     
-    CGFloat deltBootom = KIsiPhoneX ? 34.0 : 0.0;
+    rKey = [NSData randomBytes:32];
+    
+    UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+    
+    if (@available(iOS 11.0, *)) {
+        
+        UIWindow *window = [UIApplication sharedApplication].windows.lastObject;
+        safeAreaInsets = window.safeAreaInsets;
+    }
+    
+    CGFloat deltBootom = safeAreaInsets.bottom;
     isUpper = NO;
     if (@available(iOS 13.0, *)) {
         self.backgroundColor = [[UIColor secondarySystemGroupedBackgroundColor] colorWithAlphaComponent:0.5];
@@ -403,15 +385,6 @@ NSString *LTInputViewPlainText(UITextField *textField){
     [btn addTarget:self
             action:@selector(keyPressed:)
   forControlEvents:UIControlEventTouchUpInside];
-    
-//    if (@available(iOS 13.0, *)) {
-//        [btn setBackgroundImage:[self imageWithColor:[UIColor systemGroupedBackgroundColor]]
-//                       forState:UIControlStateNormal];
-//    } else {
-//
-//        [btn setBackgroundImage:[self imageWithColor:[UIColor whiteColor]]
-//        forState:UIControlStateNormal];
-//    }
 
     [btn setBackgroundImage:[self imageWithColor:[UIColor systemBlueColor]]
                                   forState:UIControlStateSelected];
@@ -782,7 +755,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
         return;
     }
     NSData *data = [append dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *encData = [data lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+    NSData *encData = [data lt_aes256EncryptWithKeyBytes:rKey.bytes];
     [self clearObjectContent:data];
     [self.contentArray addObject:encData];
     
@@ -844,16 +817,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
 }
 
 - (NSString *)textPlain{
-    
-//    if (self.content.length==0) {
-//
-//        return @"";
-//    }
-    
-//    NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-//    NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-//    [self clearObjectContent:decData];
-    
+        
     if (self.contentArray.count==0) {
         
         return @"";
@@ -862,7 +826,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     
     [self.contentArray enumerateObjectsUsingBlock:^(NSData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        NSData *plainData = [obj lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
+        NSData *plainData = [obj lt_aes256DecryptWithKeyBytes:rKey.bytes];
         NSString *plainString = [[NSString alloc] initWithData:plainData encoding:NSUTF8StringEncoding];
         [self clearObjectContent:plainData];
         [plain appendString:plainString];
