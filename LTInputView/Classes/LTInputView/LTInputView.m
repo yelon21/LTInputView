@@ -43,8 +43,11 @@ typedef NS_ENUM(NSInteger, LTKeyType) {
 }
 
 @property(nonatomic,strong) UIView *topView;
-@property(nonatomic,strong) UIView *contentkeysView;
 @property(nonatomic,strong) UILabel *titleLabel;
+@property(nonatomic,strong) LTValueButton *doneBtn;
+
+@property(nonatomic,strong) UIView *contentkeysView;
+
 @property(nonatomic,assign,readonly)NSString *textPlain;
 
 @property(nonatomic,strong, readonly) NSMutableArray *contentArray;
@@ -86,6 +89,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     handleTF.text = nil;
 }
 
+#pragma mark setter getter
 -(void)setTitle:(NSString *)title{
 
     self.titleLabel.text = title;
@@ -106,8 +110,32 @@ NSString *LTInputViewPlainText(UITextField *textField){
         _titleLabel.textColor = [UIColor systemGrayColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.text = @"安全输入";
+        _titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     return _titleLabel;
+}
+
+- (NSString *)textPlain{
+        
+    if (self.contentArray.count==0) {
+        
+        return @"";
+    }
+    NSMutableString *plain = [[NSMutableString alloc] init];
+    
+    [self.contentArray enumerateObjectsUsingBlock:^(NSData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        NSData *plainData = [obj lt_aes256DecryptWithKeyBytes:rKey.bytes];
+        NSString *plainString = [[NSString alloc] initWithData:plainData encoding:NSUTF8StringEncoding];
+        [self clearObjectContent:plainData];
+        [plain appendString:plainString];
+        [self clearObjectContent:plainString];
+    }];
+    
+    NSString *decStr = [NSString stringWithString:plain];
+    [self clearObjectContent:plain];
+    
+    return decStr;
 }
 
 -(NSMutableArray *)contentArray{
@@ -117,6 +145,20 @@ NSString *LTInputViewPlainText(UITextField *textField){
         _contentArray = [[NSMutableArray alloc] init];
     }
     return _contentArray;
+}
+
+-(LTValueButton *)doneBtn{
+    
+    if (!_doneBtn) {
+        
+        _doneBtn = [self newValueButton];
+        [_doneBtn setBackgroundImage:nil
+                       forState:UIControlStateNormal];
+        _doneBtn.tag = LTKeyType_done;
+        [_doneBtn setTitle:@"完成" forState:UIControlStateNormal];
+        _doneBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+    }
+    return _doneBtn;
 }
 
 - (UIView *)topView{
@@ -131,68 +173,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
         } else {
             _topView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
         }
-        [self addSubview:_topView];
-        _topView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        
-        UILabel *titleLabel = self.titleLabel;
-        
-        titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        [_topView addSubview:titleLabel];
-        
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
-                                                             attribute:NSLayoutAttributeCenterX
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_topView
-                                                             attribute:NSLayoutAttributeCenterX
-                                                            multiplier:1.0
-                                                              constant:0.0]];
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:titleLabel
-                                                             attribute:NSLayoutAttributeCenterY
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_topView
-                                                             attribute:NSLayoutAttributeCenterY
-                                                            multiplier:1.0
-                                                              constant:0.0]];
-        
-        LTValueButton *btn = [self newValueButton];
-        btn.layer.masksToBounds = NO;
-        [btn setBackgroundImage:nil
-                       forState:UIControlStateNormal];
-        
-        btn.tag = LTKeyType_done;
-        [btn setTitle:@"完成" forState:UIControlStateNormal];
-        btn.titleLabel.font = [UIFont systemFontOfSize:16];
-        btn.translatesAutoresizingMaskIntoConstraints = NO;
-        [_topView addSubview:btn];
-        
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:btn
-                                                             attribute:NSLayoutAttributeTop
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_topView
-                                                             attribute:NSLayoutAttributeTop
-                                                            multiplier:1.0
-                                                              constant:0.0]];
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:btn
-                                                             attribute:NSLayoutAttributeRight
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_topView
-                                                             attribute:NSLayoutAttributeRight
-                                                            multiplier:1.0
-                                                              constant:0.0]];
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:btn
-                                                             attribute:NSLayoutAttributeBottom
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_topView
-                                                             attribute:NSLayoutAttributeBottom
-                                                            multiplier:1.0
-                                                              constant:0.0]];
-        [_topView addConstraint:[NSLayoutConstraint constraintWithItem:btn
-                                                             attribute:NSLayoutAttributeWidth
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:nil
-                                                             attribute:NSLayoutAttributeNotAnAttribute
-                                                            multiplier:1.0
-                                                              constant:60.0]];
+        _topView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     return _topView;
 }
@@ -201,9 +182,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     
     if (!_contentkeysView) {
         
-        CGFloat width = CGRectGetWidth(self.bounds);
-        
-        _contentkeysView = [[UIView alloc] initWithFrame:CGRectMake(0.0, topViewH+0.5, width, contentkeysViewH)];
+        _contentkeysView = [[UIView alloc] init];
         _contentkeysView.backgroundColor = [UIColor clearColor];
         [self addSubview:_contentkeysView];
         _contentkeysView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -232,6 +211,34 @@ NSString *LTInputViewPlainText(UITextField *textField){
 -(void)layoutSubviews{
 
     [super layoutSubviews];
+    
+    UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+    UIWindow *window = [UIApplication sharedApplication].windows.lastObject;
+    
+    if (@available(iOS 11.0, *)) {
+        
+        safeAreaInsets = window.safeAreaInsets;
+    }
+    
+    CGFloat winWidth = CGRectGetWidth(window.bounds);
+    
+    CGFloat selfWidth = winWidth-safeAreaInsets.left-safeAreaInsets.right;
+    
+    self.frame = CGRectMake(safeAreaInsets.left,
+                            0.0,
+                            selfWidth,
+                            topViewH+contentkeysViewH+1 + safeAreaInsets.bottom);
+    
+    CGFloat width = selfWidth;
+    CGFloat doneBtnWidth = 60.0;
+    
+    self.topView.frame = CGRectMake(0.0, 0.0, width, topViewH);
+    
+    self.titleLabel.frame = CGRectMake(doneBtnWidth, 0.0, width-doneBtnWidth-doneBtnWidth, topViewH);
+    self.doneBtn.frame = CGRectMake(width-doneBtnWidth, 0.0, doneBtnWidth, topViewH);
+    
+    self.contentkeysView.frame = CGRectMake(0.0, topViewH, width, contentkeysViewH);
+    
     [self reloadViews];
 }
 
@@ -244,25 +251,36 @@ NSString *LTInputViewPlainText(UITextField *textField){
 - (void)setup{
     
     rKey = [NSData randomBytes:32];
+    isUpper = NO;
     
     UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+    UIWindow *window = [UIApplication sharedApplication].windows.lastObject;
     
     if (@available(iOS 11.0, *)) {
         
-        UIWindow *window = [UIApplication sharedApplication].windows.lastObject;
         safeAreaInsets = window.safeAreaInsets;
     }
     
-    CGFloat deltBootom = safeAreaInsets.bottom;
-    isUpper = NO;
+    CGFloat winWidth = CGRectGetWidth(window.bounds);
+    
+    CGFloat selfWidth = winWidth-safeAreaInsets.left-safeAreaInsets.right;
+    
+    self.frame = CGRectMake(safeAreaInsets.left,
+                            0.0,
+                            selfWidth,
+                            topViewH+contentkeysViewH+1 + safeAreaInsets.bottom);
+    
     if (@available(iOS 13.0, *)) {
         self.backgroundColor = [[UIColor secondarySystemGroupedBackgroundColor] colorWithAlphaComponent:0.5];
     } else {
         self.backgroundColor = [[UIColor lightTextColor] colorWithAlphaComponent:0.1];
     }
-    CGFloat width = CGRectGetWidth([UIScreen mainScreen].bounds);
-    self.frame = CGRectMake(0.0, 0.0, width, topViewH+contentkeysViewH+1 + deltBootom);
-    [self topView];
+    
+    [self addSubview:self.topView];
+    [self.topView addSubview:self.titleLabel];
+    [self.topView addSubview:self.doneBtn];
+    [self addSubview:self.contentkeysView];
+    
     [self reloadViews];
 }
 
@@ -362,38 +380,6 @@ NSString *LTInputViewPlainText(UITextField *textField){
         }
     }
 }
-
-- (LTValueButton *)newValueButton{
-    
-    LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeCustom];
-    btn.titleLabel.font = [UIFont systemFontOfSize:20];
-    
-    if (@available(iOS 13.0, *)) {
-        [btn setTitleColor:[UIColor labelColor]
-                  forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor labelColor]
-                  forState:UIControlStateHighlighted];
-        btn.backgroundColor = [UIColor systemGroupedBackgroundColor];
-    } else {
-        [btn setTitleColor:[UIColor blackColor]
-                  forState:UIControlStateNormal];
-        [btn setTitleColor:[UIColor blackColor]
-                  forState:UIControlStateHighlighted];
-        btn.backgroundColor = [UIColor whiteColor];
-    }
-    
-    [btn addTarget:self
-            action:@selector(keyPressed:)
-  forControlEvents:UIControlEventTouchUpInside];
-
-    [btn setBackgroundImage:[self imageWithColor:[UIColor systemBlueColor]]
-                                  forState:UIControlStateSelected];
-    
-    btn.layer.cornerRadius = 5.0;
-    btn.layer.masksToBounds = YES;
-    return btn;
-}
-
 //设置字母键盘
 - (void)setupAlp{
     
@@ -602,7 +588,6 @@ NSString *LTInputViewPlainText(UITextField *textField){
         }
     }
 }
-
 //设置数字
 - (void)setupDigit{
     
@@ -686,6 +671,36 @@ NSString *LTInputViewPlainText(UITextField *textField){
     }
 }
 
+- (LTValueButton *)newValueButton{
+    
+    LTValueButton *btn = [LTValueButton buttonWithType:UIButtonTypeCustom];
+    btn.titleLabel.font = [UIFont systemFontOfSize:20];
+    
+    if (@available(iOS 13.0, *)) {
+        [btn setTitleColor:[UIColor labelColor]
+                  forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor labelColor]
+                  forState:UIControlStateHighlighted];
+        btn.backgroundColor = [UIColor systemGroupedBackgroundColor];
+    } else {
+        [btn setTitleColor:[UIColor blackColor]
+                  forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor blackColor]
+                  forState:UIControlStateHighlighted];
+        btn.backgroundColor = [UIColor whiteColor];
+    }
+    
+    [btn addTarget:self
+            action:@selector(keyPressed:)
+  forControlEvents:UIControlEventTouchUpInside];
+
+    [btn setBackgroundImage:[self imageWithColor:[UIColor systemBlueColor]]
+                                  forState:UIControlStateSelected];
+    
+    btn.layer.cornerRadius = 5.0;
+    btn.layer.masksToBounds = YES;
+    return btn;
+}
 #pragma mark key action
 - (void)keyPressed:(LTValueButton *)btn{
     
@@ -759,27 +774,6 @@ NSString *LTInputViewPlainText(UITextField *textField){
     [self clearObjectContent:data];
     [self.contentArray addObject:encData];
     
-//    NSMutableString *contentString = [[NSMutableString alloc]init];
-//
-//    if (self.content && self.content.length > 0) {
-//
-//        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-//        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-//        [self clearObjectContent:decData];
-//        if (decString.length > 0) {
-//
-//            [contentString setString:decString];
-//        }
-//        [self clearObjectContent:decString];
-//    }
-//
-//    [contentString appendString:append];
-//
-//    NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
-//    [self clearObjectContent:contentString];
-//    self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-//    [self clearObjectContent:contentData];
-    
     [handleTF insertText:@"*"];
 }
 
@@ -790,54 +784,9 @@ NSString *LTInputViewPlainText(UITextField *textField){
         [self.contentArray removeLastObject];
     }
     
-//    if (self.content && self.content.length > 0) {
-//
-//        NSMutableString *contentString = [[NSMutableString alloc]init];
-//
-//        NSData *decData = [self.content lt_aes256DecryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-//        NSString *decString = [[NSString alloc] initWithData:decData encoding:NSUTF8StringEncoding];
-//        [self clearObjectContent:decData];
-//
-//        if (decString.length > 0) {
-//
-//            [contentString setString:decString];
-//            [self clearObjectContent:decString];
-//
-//            [contentString deleteCharactersInRange:NSMakeRange(contentString.length-1, 1)];
-//
-//            NSData *contentData = [contentString dataUsingEncoding:NSUTF8StringEncoding];
-//
-//            [self clearObjectContent:contentString];
-//            self.content = [contentData lt_aes256EncryptWithKey:@"7f4314f9e1d6dedcce203e6a350d6b1d"];
-//            [self clearObjectContent:contentData];
-//        }
-//    }
-    
     [handleTF deleteBackward];
 }
 
-- (NSString *)textPlain{
-        
-    if (self.contentArray.count==0) {
-        
-        return @"";
-    }
-    NSMutableString *plain = [[NSMutableString alloc] init];
-    
-    [self.contentArray enumerateObjectsUsingBlock:^(NSData *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        NSData *plainData = [obj lt_aes256DecryptWithKeyBytes:rKey.bytes];
-        NSString *plainString = [[NSString alloc] initWithData:plainData encoding:NSUTF8StringEncoding];
-        [self clearObjectContent:plainData];
-        [plain appendString:plainString];
-        [self clearObjectContent:plainString];
-    }];
-    
-    NSString *decStr = [NSString stringWithString:plain];
-    [self clearObjectContent:plain];
-    
-    return decStr;
-}
 #pragma mark UIInputViewAudioFeedback
 - (BOOL)enableInputClicksWhenVisible {
     
@@ -859,7 +808,7 @@ NSString *LTInputViewPlainText(UITextField *textField){
     
     return image;
 }
-
+// 去除
 - (void)clearObjectContent:(NSObject *)obj{
     
     if ([obj isKindOfClass:[NSData class]]) {
